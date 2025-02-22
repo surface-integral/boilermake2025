@@ -12,7 +12,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const wifiSpeeds = ["Any", "Slow", "Moderate", "Fast"];
+const wifiSpeeds = ["Any", "Slow", "Moderate", "Fast"]; //Key Word
 const noiseLevels = ["Any", "Quiet", "Moderate", "Loud"];
 const budgets = ["Any", "$", "$$", "$$$"];
 
