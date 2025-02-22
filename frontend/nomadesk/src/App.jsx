@@ -1,18 +1,18 @@
 import React from "react";
-import RegisterForm from "./components/RegisterForm";
-import { CssBaseline, Container, Typography } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { CssBaseline } from "@mui/material";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
-    <>
+    <Router>
       <CssBaseline />
-      <Container>
-        <Typography variant="h3" align="center" gutterBottom sx={{ mt: 4 }}>
-          Welcome to NomadDesk
-        </Typography>
-        <RegisterForm />
-      </Container>
-    </>
+      <Routes>
+        <Route path="/" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
   );
 }
 
