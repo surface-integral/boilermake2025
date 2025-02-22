@@ -3,34 +3,6 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const db = require("./db")
 
-// const { MongoClient, ServerApiVersion } = require('mongodb')
-
-// const uri = "mongodb+srv://admin:adminpass@nomadesk.vlw5u.mongodb.net/?retryWrites=true&w=majority&appName=nomadesk"
-
-// const client = new MongoClient(uri, {
-//     serverApi: {
-//       version: ServerApiVersion.v1,
-//       strict: true,
-//       deprecationErrors: true,
-//     }
-//   })
-
-// async function run() {
-//     try {
-//       // Connect the client to the server	(optional starting in v4.7)
-//         await client.connect();
-//       // Send a ping to confirm a successful connection
-//         await client.db("admin").command({ ping: 1 });
-//         console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//     } 
-//     finally {
-//       // Ensures that the client will close when you finish/error
-//         await client.close();
-//     }
-// }
-// run().catch(console.dir);
-
-
 router.post("/login/", async (req, res) => {
     const collection = await db.collection("Profiles")
     const body = req.body
@@ -46,7 +18,23 @@ router.post("/login/", async (req, res) => {
         return
     }
 
+    req.session.user = {
+        id: String(result._id), 
+        username: result.username,
+        firstName: result.firstName,
+        lastName: result.lastName,
+        email: result.email,
+        password: result.password
+    }
+
     res.status(200).json(result)
+})
+
+router.get("/current/", (req, res) => {
+    if (req.session.user) {
+        res.status(200).json(req.session.user)
+    }
+    res.status(401).send("Not logged in!")
 })
 
 router.post("/register/", async (req, res) => {
