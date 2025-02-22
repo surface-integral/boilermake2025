@@ -55,9 +55,9 @@ const LoginForm = () => {
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>
+        {/* <Typography variant="h5" gutterBottom>
           Login to Your Account
-        </Typography>
+        </Typography> */}
 
         {message && (
           <Alert severity={message.type} sx={{ mb: 2 }}>

@@ -65,9 +65,9 @@ const RegisterForm = ({ onRegister }) => {
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>
+        {/* <Typography variant="h5" gutterBottom>
           Create an Account
-        </Typography>
+        </Typography> */}
 
         {message && (
           <Alert severity={message.type} sx={{ mb: 2 }}>
@@ -129,66 +129,7 @@ const RegisterForm = ({ onRegister }) => {
         </Box>
       </Paper>
     </Container>
-    // <Container maxWidth="sm">
-    //   <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: "center" }}>
-    //     <Typography variant="h5" gutterBottom>
-    //       Create an Account
-    //     </Typography>
-
-    //     <Box
-    //       component="form"
-    //       onSubmit={handleSubmit}
-    //       sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-    //     >
-    //       <TextField
-    //         label="Username"
-    //         name="username"
-    //         value={formData.username}
-    //         onChange={handleChange}
-    //         required
-    //         fullWidth
-    //       />
-    //       <TextField
-    //         label="First Name"
-    //         name="firstName"
-    //         value={formData.firstName}
-    //         onChange={handleChange}
-    //         required
-    //         fullWidth
-    //       />
-    //       <TextField
-    //         label="Last Name"
-    //         name="lastName"
-    //         value={formData.lastName}
-    //         onChange={handleChange}
-    //         required
-    //         fullWidth
-    //       />
-    //       <TextField
-    //         label="Email"
-    //         name="email"
-    //         type="email"
-    //         value={formData.email}
-    //         onChange={handleChange}
-    //         required
-    //         fullWidth
-    //       />
-    //       <TextField
-    //         label="Password"
-    //         name="password"
-    //         type="password"
-    //         value={formData.password}
-    //         onChange={handleChange}
-    //         required
-    //         fullWidth
-    //       />
-
-    //       <Button type="submit" variant="contained" color="primary" fullWidth>
-    //         Register
-    //       </Button>
-    //     </Box>
-    //   </Paper>
-    // </Container>
+    
   );
 };
 
