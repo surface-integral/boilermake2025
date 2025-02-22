@@ -33,6 +33,7 @@ router.post("/login/", async (req, res) => {
 router.get("/current/", (req, res) => {
     if (req.session.user) {
         res.status(200).json(req.session.user)
+        return
     }
     res.status(401).send("Not logged in!")
 })
