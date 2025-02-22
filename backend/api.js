@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const db = require("./db")
+const GOOGLE_MAPS_API_KEY = "AIzaSyDEjG0iYPpttEDuYugMPmA9mo_Sf-7866M"
 
 router.post("/login/", async (req, res) => {
     try {
@@ -93,6 +94,46 @@ router.post("/register/", async (req, res) => {
     }
     catch (error) {
         res.status(500).send("Internal server error")
+    }
+})
+
+router.post("/search/", async (req, res) => {
+    try {
+        const body = req.body
+        const lat = body.lat
+        const lng = body.lng
+        const radius = body.radius
+        const type = body.type
+        const keyword = body.keyword
+
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`
+
+        const params = {
+            location: `${lat},${lng}`,
+            radius: radius,
+            type: type,
+            keyword: keyword,
+            key: GOOGLE_MAPS_API_KEY
+        }
+
+        const searchParams = new URLSearchParams()
+
+        for (const key in params) {
+            searchParams.append(key, params[key])
+        }
+
+        const paramString = searchParams.toString()
+
+        const finalURL = url + "?" + paramString
+
+        const response = await fetch(finalURL)
+
+        const data = await response.json()
+
+        res.status(200).json(data)
+    }
+    catch (error) {
+        res.status(500).send("Internal server error!")
     }
 })
 
