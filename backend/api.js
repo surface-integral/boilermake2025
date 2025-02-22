@@ -31,7 +31,7 @@ const db = require("./db")
 // run().catch(console.dir);
 
 
-router.get("/login/", async (req, res) => {
+router.post("/login/", async (req, res) => {
     const collection = await db.collection("Profiles")
     const body = req.body
     const email = body.email
