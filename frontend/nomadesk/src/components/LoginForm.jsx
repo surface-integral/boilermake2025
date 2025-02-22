@@ -8,8 +8,11 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
+import { useAuth } from "../contexts/authContext";
 
 const LoginForm = () => {
+  const auth = useAuth()
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -26,17 +29,17 @@ const LoginForm = () => {
     setMessage(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
-      });
-
+      // const response = await fetch("http://localhost:3000/api/login/", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(loginData),
+      // });
+      const response = await auth.login(loginData.email, loginData.password)
       console.log("response:", response);
-      const data = await response.json();
-      console.log("data:", data);
+      // const data = await response.json();
+      // console.log("data:", data);
 
-      if (response.ok) {
+      if (response) {
         setMessage({ type: "success", text: "Login successful!" });
       } else {
         setMessage({ type: "error", text: data.message || "Login failed" });

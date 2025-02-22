@@ -8,24 +8,32 @@ const apiRouter = require('./api')
 const app = express()
 const PORT = 3000
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}))
+
 app.use(express.json())
 
 const store = new MongoDBStore({
     uri: "mongodb+srv://admin:adminpass@nomadesk.vlw5u.mongodb.net/?retryWrites=true&w=majority&appName=nomadesk", // Replace with your MongoDB URI
-    collection: 'Sessions'
+    collection: 'Sessions',
+    databaseName: 'Accounts'
 });
-app.use(session({
-    secret: 'ellie',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
+
+app.use(
+    session({
+      secret: "ellie",
+      store: store,
+      saveUninitialized: false,
+      resave: false,
+      cookie: {
+        sameSite: 'lax',
         secure: false,
         httpOnly: true,
-        sameSite: 'none'
-    },
-    store: store
-  }));
+      },
+    })
+  );
 
 store.on('error', function(error) {
     console.error('Session store error:', error);
