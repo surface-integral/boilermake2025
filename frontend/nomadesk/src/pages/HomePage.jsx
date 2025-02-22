@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, AppBar, Toolbar, Typography, Box } from "@mui/material";
-import SearchBar from "../components/NavBar";
+import NavBar from "../components/NavBar";
 
 const HomePage = () => {
   return (
@@ -11,15 +11,15 @@ const HomePage = () => {
         sx={{ backgroundColor: "white", boxShadow: "none", padding: 1 }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6" sx={{ color: "black", fontWeight: "bold" }}>
+          {/* <Typography variant="h6" sx={{ color: "black", fontWeight: "bold" }}>
             nomadDesk - find your next desk
-          </Typography>
+          </Typography> */}
         </Toolbar>
       </AppBar>
 
       {/* Centered Search Bar */}
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <SearchBar />
+      <Box sx={{ display: "flex", justifyContent: "right", mt: 3 }}>
+        <NavBar />
       </Box>
     </Container>
   );
