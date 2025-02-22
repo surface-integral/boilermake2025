@@ -9,10 +9,11 @@ import {
   Alert,
 } from "@mui/material";
 import { useAuth } from "../contexts/authContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
-  const auth = useAuth()
-
+  const auth = useAuth();
+  const navigate = useNavigate(); // Initialize navigation hook
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -34,13 +35,15 @@ const LoginForm = () => {
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify(loginData),
       // });
-      const response = await auth.login(loginData.email, loginData.password)
+      const response = await auth.login(loginData.email, loginData.password);
       console.log("response:", response);
       // const data = await response.json();
       // console.log("data:", data);
 
       if (response) {
         setMessage({ type: "success", text: "Login successful!" });
+        navigate("/home");
+        // <Link href="/">Register here</Link>;
       } else {
         setMessage({ type: "error", text: data.message || "Login failed" });
       }
