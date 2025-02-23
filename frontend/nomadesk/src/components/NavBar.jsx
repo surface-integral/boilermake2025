@@ -12,7 +12,13 @@ import {
   Select,
   OutlinedInput,
   Chip,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Button,
 } from "@mui/material";
+
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/authContext";
@@ -58,6 +64,7 @@ const NavBar = ({ setLocations }) => {
   const navigate = useNavigate();
   const [selectedPlaces, setSelectedPlaces] = useState([]);
   const [distance, setDistance] = useState("");
+  const [googlePlaces, setGooglePlaces] = useState([]);
 
   //handle multiple selection
 
@@ -90,116 +97,124 @@ const NavBar = ({ setLocations }) => {
         },
 
         body: JSON.stringify({
-          placeTypes: selectedPlaces, //send selected places in request body
-          distance: distance || 500,
+          includedTypes: selectedPlaces, //send selected places in request body
+          radius: distance || 500,
+          lat: 34.1662801,
+          long: -118.1766523,
         }),
       });
 
       const data = await response.json();
-      console.log("selectedPlaces data1:", data);
-
       if (response.ok) {
-        setLocations(data.results); //set locations in state for display
-        console.log("selectedPlaces data1 success:", data);
+        setGooglePlaces(data.places); //set locations in state for display
+        console.log("selectedPlaces data1 success:", data.places);
       } else {
         console.error("Search failed:", data);
         console.log("selectedPlaces data1 failed:", data);
       }
+      console.log("Google places", googlePlaces);
     } catch (error) {
       console.error("Error fetching places:", error);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-
-        alignItems: "center",
-
-        justifyContent: "space-between",
-
-        padding: 3,
-
-        width: "95%",
-
-        position: "absolute",
-
-        top: 0,
-
-        left: 0,
-      }}
-    >
-      {/* Title */}
-
-      <Typography variant="h5" fontWeight="bold" fontSize={30}>
-        nomadDesk <br />
-        find your next desk
-      </Typography>
-
-      {/* Search Bar */}
-
-      <Paper
-        elevation={3}
+    <>
+      <Box
         sx={{
           display: "flex",
-
           alignItems: "center",
-
-          gap: 2,
-
-          padding: 2,
-
-          borderRadius: 10,
-
-          width: "70%",
+          justifyContent: "space-between",
+          padding: 3,
+          width: "95%",
+          position: "absolute",
+          top: 0,
+          left: 0,
         }}
       >
-        {/* Places Dropdown (90%) */}
-        <FormControl sx={{ flex: 9 }}>
-          <InputLabel id="places-chip-label">Places</InputLabel>
+        {/* Title */}
 
-          <Select
-            labelId="places-chip-label"
-            id="places-chip"
-            multiple
-            value={selectedPlaces}
-            onChange={handlePlaceChange}
-            input={<OutlinedInput id="select-multiple-chip" label="Places" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
-            )}
-            MenuProps={MenuProps}
+        <Typography variant="h5" fontWeight="bold" fontSize={30}>
+          nomadDesk <br />
+          find your next desk
+        </Typography>
+
+        {/* Search Bar */}
+
+        <Paper
+          elevation={3}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            padding: 2,
+            borderRadius: 10,
+            width: "70%",
+          }}
+        >
+          {/* Places Dropdown (90%) */}
+          <FormControl sx={{ flex: 9 }}>
+            <InputLabel id="places-chip-label">Places</InputLabel>
+
+            <Select
+              labelId="places-chip-label"
+              id="places-chip"
+              multiple
+              value={selectedPlaces}
+              onChange={handlePlaceChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Places" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {places.map((place) => (
+                <MenuItem
+                  key={place}
+                  value={place}
+                  style={{ fontWeight: theme.typography.fontWeightRegular }}
+                >
+                  {place}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Distance Text Field (10%) */}
+          <TextField
+            label="Distance"
+            variant="outlined"
+            sx={{ flex: 1 }}
+            value={distance}
+            onChange={(e) => setDistance(e.target.value)}
+            placeholder="e.g., 10 km"
+          />
+
+          {/* Search Button */}
+          <IconButton
+            onClick={handleSearch}
+            sx={{
+              backgroundColor: "#ff385c",
+
+              color: "white",
+
+              "&:hover": { backgroundColor: "#e31b54" },
+            }}
           >
-            {places.map((place) => (
-              <MenuItem
-                key={place}
-                value={place}
-                style={{ fontWeight: theme.typography.fontWeightRegular }}
-              >
-                {place}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            <SearchIcon />
+          </IconButton>
+        </Paper>
 
-        {/* Distance Text Field (10%) */}
-        <TextField
-          label="Distance"
-          variant="outlined"
-          sx={{ flex: 1 }}
-          value={distance}
-          onChange={(e) => setDistance(e.target.value)}
-          placeholder="e.g., 10 km"
-        />
+        {/* Log Out Button */}
 
-        {/* Search Button */}
         <IconButton
-          onClick={handleSearch}
+          variant="contained"
+          color="secondary"
+          onClick={handleLogout}
           sx={{
             backgroundColor: "#ff385c",
 
@@ -208,27 +223,67 @@ const NavBar = ({ setLocations }) => {
             "&:hover": { backgroundColor: "#e31b54" },
           }}
         >
-          <SearchIcon />
+          <LogoutIcon />
         </IconButton>
-      </Paper>
+      </Box>
 
-      {/* Log Out Button */}
+      <Box sx={{ width: "100%", marginTop: 2 }}>
+        {googlePlaces.length > 0 ? (
+          googlePlaces.map((location, index) => (
+            <Card
+              key={index}
+              sx={{
+                width: "100%", // Full width
+                marginBottom: 2,
+                cursor: "pointer",
+                "&:hover": { boxShadow: 6 }, // Elevation effect on hover
+              }}
+            >
+              {/* Image */}
+              <CardMedia
+                sx={{ height: 200 }}
+                image={"https://source.unsplash.com/800x600/?city"} // Fallback image
+                title={location.displayName?.text ?? "No name found"}
+              />
 
-      <IconButton
-        variant="contained"
-        color="secondary"
-        onClick={handleLogout}
-        sx={{
-          backgroundColor: "#ff385c",
+              {/* Content */}
+              <CardContent>
+                <Typography gutterBottom variant="h5">
+                  {location.displayName?.text ?? "No name found"}
+                </Typography>
+                {location.types.map((type, index) => (
+                  <Typography variant="body2" color="text.secondary">
+                    {type}
+                  </Typography>
+                ))}
+                <Typography>
+                  {location.formattedAddress ?? "No address available"}
+                </Typography>
+                <Typography>
+                  {`Start Price: ${
+                    location.priceRange?.startPrice?.units ?? "N/A"
+                  } 
+                  ${location.priceRange?.startPrice?.currencyCode ?? ""}`}
+                </Typography>
+                <Typography>
+                  {`End Price: ${location.priceRange?.endPrice?.units ?? "N/A"} 
+                  ${location.priceRange?.endPrice?.currencyCode ?? ""}`}
+                </Typography>
+              </CardContent>
 
-          color: "white",
-
-          "&:hover": { backgroundColor: "#e31b54" },
-        }}
-      >
-        <LogoutIcon />
-      </IconButton>
-    </Box>
+              {/* Actions */}
+              <CardActions>
+                <Button size="small">
+                  {location.websiteUri ? <a href={location.websiteUri}></a> : <></>}
+                </Button>
+              </CardActions>
+            </Card>
+          ))
+        ) : (
+          <></>
+        )}
+      </Box>
+    </>
   );
 };
 
