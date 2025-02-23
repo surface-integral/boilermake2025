@@ -67,7 +67,7 @@ const NavBar = ({ setLocations }) => {
   const [selectedPlaces, setSelectedPlaces] = useState([]);
   const [distance, setDistance] = useState("");
   const [googlePlaces, setGooglePlaces] = useState([]);
-  const geoLocation = useGeolocation()
+  const {location} = useGeolocation()
 
   //handle multiple selection
 
@@ -77,6 +77,7 @@ const NavBar = ({ setLocations }) => {
     } = event;
     setSelectedPlaces(typeof value === "string" ? value.split(",") : value);
     console.log("handlePlaceChange:", selectedPlaces);
+    console.log(location.latitude, location.longitude)
   };
 
   const handleLogout = async () => {
@@ -102,8 +103,8 @@ const NavBar = ({ setLocations }) => {
         body: JSON.stringify({
           includedTypes: selectedPlaces, //send selected places in request body
           radius: distance || 5000,
-          lat: geoLocation.latitude ?? 40.4283725,
-          long: geoLocation.longitude ?? -86.9258708
+          lat: location.latitude,
+          long: location.longitude
         }),
       });
 
@@ -246,7 +247,7 @@ const NavBar = ({ setLocations }) => {
               {/* Image */}
               <CardMedia
                 sx={{ height: 200 }}
-                image={"https://source.unsplash.com/800x600/?city"} // Fallback image
+                image={"https://coffective.com/wp-content/uploads/2018/06/default-featured-image.png.jpg"} // Fallback image
                 title={location.displayName?.text ?? "No name found"}
               />
 
