@@ -101,38 +101,45 @@ router.post("/search/", async (req, res) => {
     try {
         const body = req.body
         const lat = body.lat
-        const lng = body.lng
+        const long = body.long
+        const includedTypes = body.includedTypes
         const radius = body.radius
-        const type = body.type
-        const keyword = body.keyword
 
-        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`
+        const url = `https://places.googleapis.com/v1/places:searchNearby`
 
-        const params = {
-            location: `${lat},${lng}`,
-            radius: radius,
-            type: type,
-            keyword: keyword,
-            key: GOOGLE_MAPS_API_KEY
+        const requestBody = {
+            includedTypes: includedTypes,
+            maxResultCount: 10,
+            locationRestriction: {
+                circle: {
+                    center: {
+                        latitude: lat,
+                        longitude: long
+                    },
+                    radius: radius 
+                }
+            },
+            rankPreference: "DISTANCE"
         }
 
-        const searchParams = new URLSearchParams()
+        const headers = new Headers()
 
-        for (const key in params) {
-            searchParams.append(key, params[key])
-        }
+        headers.append('Content-Type', 'application/json')
+        headers.append('X-Goog-Api-Key', GOOGLE_MAPS_API_KEY)
+        headers.append('X-Goog-FieldMask', 'places.displayName,places.formattedAddress,places.photos,places.types,places.websiteUri,places.priceRange')
 
-        const paramString = searchParams.toString()
-
-        const finalURL = url + "?" + paramString
-
-        const response = await fetch(finalURL)
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(requestBody)
+        })
 
         const data = await response.json()
 
         res.status(200).json(data)
     }
     catch (error) {
+        console.log(error)
         res.status(500).send("Internal server error!")
     }
 })
