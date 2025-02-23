@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 
 const wifiSpeeds = ["Any", "Slow", "Moderate", "Fast"]; //Key Word
