@@ -23,6 +23,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
+import useGeolocation from "../hooks/useGeoLocation";
+import { httpPost } from "../utils/utils";
 
 const places = [
   "corporate_office",
@@ -65,6 +67,7 @@ const NavBar = ({ setLocations }) => {
   const [selectedPlaces, setSelectedPlaces] = useState([]);
   const [distance, setDistance] = useState("");
   const [googlePlaces, setGooglePlaces] = useState([]);
+  const geoLocation = useGeolocation()
 
   //handle multiple selection
 
@@ -98,9 +101,9 @@ const NavBar = ({ setLocations }) => {
 
         body: JSON.stringify({
           includedTypes: selectedPlaces, //send selected places in request body
-          radius: distance || 500,
-          lat: 34.1662801,
-          long: -118.1766523,
+          radius: distance || 5000,
+          lat: geoLocation.latitude ?? 40.4283725,
+          long: geoLocation.longitude ?? -86.9258708
         }),
       });
 
@@ -227,7 +230,8 @@ const NavBar = ({ setLocations }) => {
         </IconButton>
       </Box>
 
-      <Box sx={{ width: "100%", marginTop: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      paddingTop: "200px", width: "100%", marginTop: 2 }}>
         {googlePlaces.length > 0 ? (
           googlePlaces.map((location, index) => (
             <Card
@@ -260,22 +264,31 @@ const NavBar = ({ setLocations }) => {
                   {location.formattedAddress ?? "No address available"}
                 </Typography>
                 <Typography>
-                  {`Start Price: ${
+                  {`User Ratings: ${location.rating ?? "N/A"}`}
+                </Typography>
+                <Typography>
+                  {`Cheapest Price: ${
                     location.priceRange?.startPrice?.units ?? "N/A"
                   } 
                   ${location.priceRange?.startPrice?.currencyCode ?? ""}`}
                 </Typography>
                 <Typography>
-                  {`End Price: ${location.priceRange?.endPrice?.units ?? "N/A"} 
+                  {`Most expensive Price: ${location.priceRange?.endPrice?.units ?? "N/A"} 
                   ${location.priceRange?.endPrice?.currencyCode ?? ""}`}
                 </Typography>
               </CardContent>
 
               {/* Actions */}
               <CardActions>
-                <Button size="small">
-                  {location.websiteUri ? <a href={location.websiteUri}></a> : <></>}
-                </Button>
+                {location.websiteUri &&
+                <Button 
+                component="a"
+                href={location.websiteUri}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small">
+                  Visit Website
+                </Button>}
               </CardActions>
             </Card>
           ))

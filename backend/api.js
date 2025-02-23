@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const db = require("./db")
-const GOOGLE_MAPS_API_KEY = "AIzaSyDEjG0iYPpttEDuYugMPmA9mo_Sf-7866M"
+require('dotenv').config()
 
 router.post("/login/", async (req, res) => {
     try {
@@ -125,8 +125,8 @@ router.post("/search/", async (req, res) => {
         const headers = new Headers()
 
         headers.append('Content-Type', 'application/json')
-        headers.append('X-Goog-Api-Key', GOOGLE_MAPS_API_KEY)
-        headers.append('X-Goog-FieldMask', 'places.displayName,places.formattedAddress,places.photos,places.types,places.websiteUri,places.priceRange')
+        headers.append('X-Goog-Api-Key', process.env.GOOGLE_MAPS_API_KEY)
+        headers.append('X-Goog-FieldMask', 'places.displayName,places.formattedAddress,places.photos,places.types,places.websiteUri,places.priceRange,places.rating')
 
         const response = await fetch(url, {
             method: 'POST',
@@ -211,4 +211,5 @@ router.post("/get_all_favorites/", async (req, res) => {
         res.status(500).send("Internal Server Error")
     }
 })
+
 module.exports = router
