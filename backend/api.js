@@ -144,4 +144,71 @@ router.post("/search/", async (req, res) => {
     }
 })
 
+router.post("/add_favorite/", async (req, res) => {
+    try {
+        collection = await db.collection('Favorites')
+        const body = req.body
+        const userId = body.userId
+        const place = body.place
+
+        const result = await collection.insertOne({userId, place})
+
+        if (!result.acknowledged) {
+            res.status(500).send("Error encountered while adding favorite")
+            return
+        }
+        else {
+            res.status(200).send("Favorite added!")
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send("Internal Server Error")
+    }
+})
+
+router.post("/delete_favorite/", async (req, res) => {
+    try {
+        collection = await db.collection('Favorites')
+        const body = req.body
+        const userId = body.userId
+        const place = body.place
+
+        const result = await collection.deleteOne({userId, place})
+
+        if (result.deletedCount !== 1) {
+            res.status(500).send("Error encountered while deleting favorite")
+            return
+        }
+        else {
+            res.status(200).send("Favorite deleted!")
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send("Internal Server Error")
+    }
+})
+
+router.post("/get_all_favorites/", async (req, res) => {
+    try {
+        collection = await db.collection('Favorites')
+        const body = req.body
+        const userId = body.userId
+
+        const result = await collection.find({userId})
+
+        if (!result) {
+            res.status(500).send("Error encountered while getting favorites")
+            return
+        }
+        else {
+            res.status(200).json(result)
+        }
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send("Internal Server Error")
+    }
+})
 module.exports = router
